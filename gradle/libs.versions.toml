@@ -1,0 +1,32 @@
+[versions]
+kotlin = "2.2.20"
+kotlinx-coroutines = "1.7.3"
+kotlin-logging = "7.0.7"
+slf4j = "2.0.7"
+okio = "3.16.0"
+kotest = "6.0.3"
+kotest-bdd = "2.0.1"
+dokka = "1.9.20"
+agp = "8.10.1"
+android-minSdk = "24"
+android-compileSdk = "36"
+vanniktechMavenPublish = "0.34.0"
+
+[libraries]
+kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinx-coroutines" }
+kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test" }
+kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlin" }
+kotlin-logging = { module = "io.github.oshai:kotlin-logging", version.ref = "kotlin-logging" }
+slf4j-simple = { module = "org.slf4j:slf4j-simple", version.ref = "slf4j" }
+okio = { module = "com.squareup.okio:okio", version.ref = "okio" }
+kotest-framework-engine = { module = "io.kotest:kotest-framework-engine", version.ref = "kotest" }
+kotest-assertions-core = { module = "io.kotest:kotest-assertions-core", version.ref = "kotest" }
+kotest-runner-junit5 = { module = "io.kotest:kotest-runner-junit5", version.ref = "kotest" }
+ktool-kotest-bdd = { module = "dev.ktool:kotest-bdd", version.ref = "kotest-bdd" }
+
+[plugins]
+kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+kotest = { id = "io.kotest", version.ref = "kotest" }
+androidLibrary = { id = "com.android.library", version.ref = "agp" }
+dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
+vanniktech-mavenPublish = { id = "com.vanniktech.maven.publish", version.ref = "vanniktechMavenPublish" }
