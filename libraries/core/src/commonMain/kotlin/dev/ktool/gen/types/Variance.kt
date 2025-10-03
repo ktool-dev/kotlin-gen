@@ -1,7 +1,7 @@
 package dev.ktool.gen.types
 
 enum class Variance {
-    IN, OUT;
+    In, Out;
 
     override fun toString(): String = name.lowercase()
 }

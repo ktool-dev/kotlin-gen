@@ -65,12 +65,6 @@ kotlin {
                 implementation(libs.kotest.runner.junit5)
             }
         }
-
-        val nativeMain by getting {
-            dependencies {
-                implementation(libs.okio)
-            }
-        }
     }
 }
 

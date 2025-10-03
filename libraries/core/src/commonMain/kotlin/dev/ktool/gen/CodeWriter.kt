@@ -12,7 +12,6 @@ class CodeWriter(indentationSize: Int = 4) {
     private val lines = mutableListOf(StringBuilder())
     private var indentLevel = 0
 
-
     /**
      * Appends the given code to the current line.
      */

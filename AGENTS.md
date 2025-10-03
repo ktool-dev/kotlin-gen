@@ -24,44 +24,49 @@ kotlin-gen/
 ### Core Concepts
 
 1. **Writable Interface**: All code generation elements implement `Writable` with:
-   - `write(writer: CodeWriter)`: Writes the element to a CodeWriter
-   - `render(): String`: Convenience method that returns the generated code as a string
+    - `write(writer: CodeWriter)`: Writes the element to a CodeWriter
+    - `render(): String`: Convenience method that returns the generated code as a string
 
 2. **CodeWriter**: Central rendering engine that:
-   - Manages indentation levels
-   - Handles line breaks and formatting
-   - Provides utility methods for writing code blocks
+    - Manages indentation levels
+    - Handles line breaks and formatting
+    - Provides utility methods for writing code blocks
 
 3. **Type System**: Hierarchical type system with:
-   - `Type`: Represents Kotlin types including generics
-   - `TypeParameter`: Generic type parameters with variance
-   - `Parameter`: Function/constructor parameters
-   - `Modifier`: Visibility and behavior modifiers
-   - `PropertyMutability`: val/var distinction
+    - `Type`: Represents Kotlin types including generics
+    - `TypeParameter`: Generic type parameters with variance
+    - `Parameter`: Function/constructor parameters
+    - `Modifier`: Visibility and behavior modifiers
+    - `PropertyMutability`: val/var distinction
 
 4. **Declarations**: Code elements that can appear in files:
-   - `TopLevelDeclaration`: Classes, interfaces, objects, functions, properties, type aliases
-   - `ClassMember`: Properties, functions, init blocks, constructors
+    - `TopLevelDeclaration`: Classes, interfaces, objects, functions, properties, type aliases
+    - `ClassMember`: Properties, functions, init blocks, constructors
 
 ## Key Classes
 
 ### KotlinFile
+
 The root element representing a complete `.kt` file.
 
 **Properties:**
+
 - `packageName: String?` - Package declaration (nullable)
 - `imports: MutableList<Import>` - Import statements (auto-sorted)
-- `topLevelDeclarations: MutableList<TopLevelDeclaration>` - Classes, functions, etc.
+- `members: MutableList<TopLevelDeclaration>` - Classes, functions, etc.
 
 **Behavior:**
+
 - Imports are sorted alphabetically by package path
 - Declarations are separated by blank lines
 - Output always ends with a line separator
 
 ### Class
+
 Represents Kotlin classes (including data classes).
 
 **Properties:**
+
 - `name: String` - Class name
 - `modifiers: MutableList<Modifier>` - Access/behavior modifiers
 - `typeParameters: MutableList<TypeParameter>` - Generic type parameters
@@ -70,9 +75,11 @@ Represents Kotlin classes (including data classes).
 - `members: MutableList<ClassMember>` - Properties, functions, init blocks
 
 ### Function
+
 Represents functions (top-level or member functions).
 
 **Properties:**
+
 - `name: String` - Function name
 - `receiver: Type?` - Receiver type for extension functions
 - `modifiers: MutableList<Modifier>` - Modifiers (inline, suspend, etc.)
@@ -82,9 +89,11 @@ Represents functions (top-level or member functions).
 - `body: FunctionBody?` - Function body (ExpressionBody or FunctionBlock)
 
 ### Property
+
 Represents properties (top-level or member properties).
 
 **Properties:**
+
 - `name: String` - Property name
 - `type: Type?` - Property type
 - `mutability: PropertyMutability` - val or var
@@ -93,6 +102,7 @@ Represents properties (top-level or member properties).
 - `setter: PropertySetter?` - Custom setter
 
 **Requirements:**
+
 - Must have either `type` or `initializer` (or both)
 
 ## Code Generation Patterns
@@ -130,7 +140,7 @@ val code = function.render() // Returns: "fun test()"
 val file = KotlinFile(
     packageName = "com.example",
     imports = listOf(Import("kotlin.String")),
-    topLevelDeclarations = listOf(cls)
+    members = listOf(cls)
 )
 val sourceCode = file.render()
 ```
@@ -138,6 +148,7 @@ val sourceCode = file.render()
 ## Testing Guidelines
 
 ### Test Framework
+
 Tests use **Kotest BddSpec** with Given/When/Then structure:
 
 ```kotlin
@@ -156,11 +167,13 @@ class FunctionSpec : BddSpec({
 ```
 
 ### Test Naming
+
 - Test file names end with `Spec.kt` (e.g., `FunctionSpec.kt`)
 - Test names are descriptive strings in lowercase with spaces
 - Located in `src/commonTest/kotlin/dev/ktool/gen/declarations/`
 
 ### What to Test
+
 1. **Basic functionality**: Simple cases with minimal configuration
 2. **Combinations**: Multiple modifiers, parameters, type parameters
 3. **Edge cases**: Keywords requiring backticks, empty lists
@@ -170,18 +183,23 @@ class FunctionSpec : BddSpec({
 ## Important Implementation Details
 
 ### Keyword Escaping
+
 The `safe` extension property automatically wraps Kotlin keywords in backticks:
+
 ```kotlin
 val name = "class"
 name.safe // Returns: "`class`"
 ```
 
 This is applied to:
+
 - Identifiers (class names, function names, property names)
 - Package path segments (via `safePackage`)
 
 ### Indentation Management
+
 CodeWriter uses `withIndent {}` for nested blocks:
+
 ```kotlin
 writer.write("class Foo {")
 writer.withIndent {
@@ -193,28 +211,33 @@ writer.write("}")
 ```
 
 ### Line Separator
+
 Use `LINE_SEPARATOR` constant (defined as `"\n"`) for all line breaks to ensure consistency across platforms.
 
 ## Common Tasks for Agents
 
 ### Adding a New Declaration Type
+
 1. Create class implementing `TopLevelDeclaration` or `ClassMember`
 2. Implement `write(writer: CodeWriter)` method
 3. Add test file in `commonTest/` following existing patterns
 4. Update this documentation
 
 ### Adding a New Modifier
+
 1. Add enum value to `Modifier` enum in `types/Modifier.kt`
 2. Ensure `keyword` property is set correctly
 3. Add test cases to relevant declaration tests
 
 ### Fixing a Rendering Issue
+
 1. Locate the `write()` method in the relevant class
 2. Update the CodeWriter calls
 3. Add/update tests to cover the case
 4. Verify existing tests still pass
 
 ### Understanding Existing Code
+
 1. Start with `KotlinFile` and `CodeWriter` to understand the core
 2. Look at test files (`*Spec.kt`) for usage examples
 3. Check `render()` calls in tests to see expected output

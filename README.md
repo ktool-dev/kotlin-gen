@@ -4,7 +4,8 @@ A Kotlin Multiplatform code generation library for programmatically creating Kot
 
 ## Overview
 
-Kotlin Gen provides a type-safe API for generating Kotlin code. Instead of string concatenation or templates, you can build Kotlin declarations using a fluent API that ensures proper formatting, indentation, and syntax.
+Kotlin Gen provides a type-safe API for generating Kotlin code. Instead of string concatenation or templates, you can
+build Kotlin declarations using a fluent API that ensures proper formatting, indentation, and syntax.
 
 ## Features
 
@@ -27,24 +28,23 @@ dependencies {
 ### Creating a Simple Class
 
 ```kotlin
-val kotlinFile = KotlinFile(packageName = "com.example")
+val file = KotlinFile("com.example") {
+    clas("User") {
+        property("id", type = LongType)
+        property("name", type = StringType)
+    }
+}
 
-val userClass = Class("User")
-userClass.members.add(Property("id", type = Type("Long")))
-userClass.members.add(Property("name", type = Type("String")))
-
-kotlinFile.topLevelDeclarations.add(userClass)
-
-println(kotlinFile.render())
+println(file.render())
 ```
 
 Output:
+
 ```kotlin
 package com.example
 
 class User {
     val id: Long
-
     val name: String
 }
 ```
@@ -52,50 +52,50 @@ class User {
 ### Creating Functions
 
 ```kotlin
-val function = Function(
-    name = "add",
-    parameters = listOf(
-        Parameter("a", Type("Int")),
-        Parameter("b", Type("Int"))
-    ),
-    returnType = Type("Int"),
-    body = ExpressionBody("a + b")
-)
+val file = KotlinFile("com.example") {
+    function("add", returnType = IntType) {
+        param("a", IntType)
+        param("b", IntType)
+        body = ExpressionBody("a + b")
+    }
+}
 
-println(function.render())
+println(file.render())
 // Output: fun add(a: Int, b: Int): Int = a + b
 ```
 
 ### Extension Functions
 
 ```kotlin
-val extensionFunction = Function(
-    name = "isEven",
-    receiver = Type("Int"),
-    returnType = Type("Boolean"),
-    body = ExpressionBody("this % 2 == 0")
-)
+val file = KotlinFile("com.example") {
+    function("isEven", returnType = BooleanType) {
+        receiver(IntType)
+        body = ExpressionBody("this % 2 == 0")
+    }
+}
 
-println(extensionFunction.render())
+println(file.render())
 // Output: fun Int.isEven(): Boolean = this % 2 == 0
 ```
 
 ### Creating Interfaces
 
 ```kotlin
-val repository = Interface("Repository")
-repository.typeParameters.add(TypeParameter("T"))
-repository.members.add(
-    Function(
-        "save",
-        parameters = listOf(Parameter("entity", Type("T")))
-    )
-)
+val file = KotlinFile("com.example") {
+    interfac("Repository") {
+        typeParam("T")
 
-println(repository.render())
+        function("save") {
+            param("entity", Type("T"))
+        }
+    }
+}
+
+println(file.render())
 ```
 
 Output:
+
 ```kotlin
 interface Repository<T> {
     fun save(entity: T)
@@ -105,47 +105,42 @@ interface Repository<T> {
 ### Complete File with Imports
 
 ```kotlin
-val file = KotlinFile(
-    packageName = "com.example.domain",
-    imports = listOf(
-        Import("kotlin.collections.List"),
-        Import("kotlin.collections.Map")
-    )
-)
+val file = KotlinFile("com.example.domain") {
+    import("kotlin.collections.List")
+    import("kotlin.collections.Map")
 
-val dataClass = Class("Product")
-dataClass.modifiers.add(Modifier.DATA)
-dataClass.members.add(Property("id", type = Type("String")))
-dataClass.members.add(Property("name", type = Type("String")))
-dataClass.members.add(Property("price", type = Type("Double")))
-
-file.topLevelDeclarations.add(dataClass)
+    clas("Product") {
+        modifier(Modifier.Data)
+        primaryConstructor {
+            property("id", type = StringType)
+            property("name", type = StringType)
+            property("price", type = DoubleType)
+        }
+    }
+}
 
 println(file.render())
 ```
 
 Output:
+
 ```kotlin
 package com.example.domain
 
 import kotlin.collections.List
 import kotlin.collections.Map
 
-data class Product {
-    val id: String
-
-    val name: String
-
-    val price: Double
-}
+data class Product(val id: String, val name: String, val price: Double)
 ```
 
 ## Core Components
 
 ### KotlinFile
+
 Represents a complete Kotlin source file with package declaration, imports, and top-level declarations.
 
 ### Declarations
+
 - **Class**: Standard and data classes with properties, functions, and init blocks
 - **Interface**: Interfaces with abstract functions and properties
 - **Object**: Singleton objects
@@ -154,16 +149,19 @@ Represents a complete Kotlin source file with package declaration, imports, and 
 - **TypeAlias**: Type aliases
 
 ### Type System
+
 - **Type**: Represents Kotlin types including generics
 - **TypeParameter**: Generic type parameters with variance
 - **Parameter**: Function parameters with default values
 - **Modifier**: Access modifiers (public, private, etc.) and other modifiers (override, suspend, etc.)
 
 ### Function Bodies
+
 - **ExpressionBody**: Single-expression function bodies (`= expression`)
 - **FunctionBlock**: Multi-statement function bodies with braces
 
 ### Features
+
 - **Automatic keyword escaping**: Names that conflict with Kotlin keywords are automatically wrapped in backticks
 - **Import sorting**: Imports are automatically sorted alphabetically
 - **Proper indentation**: All nested structures are properly indented
