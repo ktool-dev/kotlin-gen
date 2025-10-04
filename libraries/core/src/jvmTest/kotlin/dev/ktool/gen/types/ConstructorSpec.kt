@@ -55,7 +55,7 @@ class ConstructorSpec : BddSpec({
 
     "constructor with body" {
         Given
-        val constructor = Constructor(body = Block(mutableListOf("println(\"constructed\")")))
+        val constructor = Constructor(body = Block("println(\"constructed\")"))
 
         When
         val output = constructor.render()
@@ -70,9 +70,7 @@ class ConstructorSpec : BddSpec({
 
     "constructor with parameters and body" {
         Given
-        val block = Block().apply {
-            statements.add("this.name = name")
-        }
+        val block = Block("this.name = name")
         val constructor = Constructor(body = block).apply {
             parameters.add(Parameter("name", StringType))
         }

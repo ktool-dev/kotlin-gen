@@ -99,7 +99,7 @@ class FunctionSpec : BddSpec({
         val func = Function(
             name = "printMessage",
             parameters = listOf(Parameter("msg", StringType)),
-            body = FunctionBlock(mutableListOf("println(msg)"))
+            body = FunctionBlock("println(msg)")
         )
 
         When
@@ -118,11 +118,9 @@ class FunctionSpec : BddSpec({
         val func = Function(
             name = "process",
             body = FunctionBlock(
-                mutableListOf(
-                    "val result = compute()",
-                    "validate(result)",
-                    "return result"
-                )
+                "val result = compute()",
+                "validate(result)",
+                "return result"
             )
         )
 
@@ -265,7 +263,7 @@ class FunctionSpec : BddSpec({
                 Parameter("times", IntType),
                 Parameter("action", Type("() -> Unit"))
             ),
-            body = FunctionBlock(mutableListOf("for (i in 0 until times) action()"))
+            body = FunctionBlock("for (i in 0 until times) action()")
         )
 
         When
@@ -391,9 +389,8 @@ class FunctionSpec : BddSpec({
         Given
         val func = Function(name = "transform").apply {
             body = FunctionBlock(
-                listOf(
-                    "val a = \"blah\"",
-                    """
+                "val a = \"blah\"",
+                """
                 if(a != "blah") {
                     println(a)
                 else {
@@ -401,7 +398,6 @@ class FunctionSpec : BddSpec({
                 }
                 println("bye")
             """.trimIndent()
-                )
             )
         }
 

@@ -43,7 +43,7 @@ class ComplexGenerationSpec : BddSpec({
                 }
 
                 function("reset") {
-                    body = FunctionBlock(mutableListOf("result = 0"))
+                    body = FunctionBlock("result = 0")
                 }
             }
         }
@@ -216,15 +216,13 @@ class ComplexGenerationSpec : BddSpec({
                 function("getProductById", returnType = Type("Product?")) {
                     param("id", StringType)
                     body = FunctionBlock(
-                        listOf(
-                            "val a = 10",
-                            """
+                        "val a = 10",
+                        """
                             if(a != 10) {
                                 a++
                             }
                         """.trimIndent(),
-                            "return findProductById(id)"
-                        )
+                        "return findProductById(id)"
                     )
                 }
             }

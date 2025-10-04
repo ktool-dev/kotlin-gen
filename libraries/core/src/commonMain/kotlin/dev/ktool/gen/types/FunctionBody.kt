@@ -5,8 +5,9 @@ import dev.ktool.gen.Writable
 
 sealed interface FunctionBody : Writable
 
-class FunctionBlock(statements: List<String> = mutableListOf()) : FunctionBody, Block(statements) {
-    constructor(vararg statements: String) : this(statements.toList())
+class FunctionBlock(statements: List<Statement> = mutableListOf()) : FunctionBody, Block(statements) {
+    constructor(vararg statements: Statement) : this(statements.toList())
+    constructor(vararg statement: String) : this(statement.toList().map { it.toStatement() })
 }
 
 class ExpressionBody(var expression: String) : FunctionBody {

@@ -12,9 +12,11 @@ class InitBlockSpec : BddSpec({
         val output = initBlock.render()
 
         Then
-        output shouldBe """init {
-    println("initialized")
-}"""
+        output shouldBe """
+            init {
+                println("initialized")
+            }
+        """.trimIndent()
     }
 
     "init block with multiple statements" {
