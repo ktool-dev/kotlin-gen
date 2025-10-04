@@ -1,6 +1,7 @@
 package dev.ktool.gen
 
 const val LINE_SEPARATOR = "\n"
+const val TRIPLE_QUOTE = "\"\"\""
 
 interface Writable {
     fun write(writer: CodeWriter)
@@ -16,7 +17,7 @@ class CodeWriter(indentationSize: Int = 4) {
      * Appends the given code to the current line.
      */
     fun write(code: String): CodeWriter = apply {
-        if (code.contains(LINE_SEPARATOR)) {
+        if (code.contains(LINE_SEPARATOR) && !code.contains(TRIPLE_QUOTE)) {
             write(code.split(LINE_SEPARATOR))
         } else {
             lines.last().append(code)

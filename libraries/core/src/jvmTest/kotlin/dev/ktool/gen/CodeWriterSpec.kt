@@ -257,4 +257,17 @@ class CodeWriterSpec : BddSpec({
         Then
         writer.toString() shouldBe "start${LINE_SEPARATOR} line1inline${LINE_SEPARATOR}end"
     }
+
+    "if a multiline string is being written, don't remove the spacing in the string" {
+        Given
+        val writer = CodeWriter()
+        val content = " = $TRIPLE_QUOTE\n                </ul>$TRIPLE_QUOTE"
+
+        When
+        writer.write(content)
+
+        Then
+        println(writer.toString())
+        writer.toString() shouldBe content
+    }
 })
