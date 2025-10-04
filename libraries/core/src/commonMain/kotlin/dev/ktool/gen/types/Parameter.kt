@@ -10,10 +10,10 @@ class Parameter(
     var defaultValue: ExpressionBody? = null,
     modifiers: List<Modifier> = listOf(),
 ) : Writable, Modifiers {
-    constructor(name: String, type: Type, returnType: ExpressionBody? = null, block: Parameter.() -> Unit) : this(
+    constructor(name: String, type: Type, defaultValue: ExpressionBody? = null, block: Parameter.() -> Unit) : this(
         name,
         type,
-        returnType
+        defaultValue
     ) {
         block()
     }
