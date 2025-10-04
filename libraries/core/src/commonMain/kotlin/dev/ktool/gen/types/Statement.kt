@@ -8,6 +8,8 @@ interface Statement : Writable
 fun String.toStatement(): Statement = Literal(this)
 
 class Literal(private val value: String) : Statement, TopLevelDeclaration, ClassMember {
+    constructor(block: CodeWriter.() -> Unit) : this(CodeWriter().apply(block).toString())
+
     override fun write(writer: CodeWriter) {
         writer.write(listOf(value))
     }
