@@ -43,6 +43,10 @@ class KotlinFile(
         members += Function(name, receiver, returnType, block)
     }
 
+    fun literal(code: String) {
+        members += Literal(code)
+    }
+
     override fun property(
         name: String,
         mutability: Mutability,

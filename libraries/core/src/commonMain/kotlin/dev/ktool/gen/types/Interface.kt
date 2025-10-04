@@ -19,6 +19,10 @@ class Interface(
     override val superTypes: MutableList<Type> = superTypes.toMutableList()
     override val members: MutableList<ClassMember> = members.toMutableList()
 
+    fun literal(code: String) {
+        members += Literal(code)
+    }
+
     override fun write(writer: CodeWriter) {
         modifiers.write(writer)
         writer.write("interface ${name.safe}")
