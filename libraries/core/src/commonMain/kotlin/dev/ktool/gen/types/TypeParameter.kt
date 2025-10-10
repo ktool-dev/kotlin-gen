@@ -30,7 +30,7 @@ class TypeParameter(
 interface TypeParameters {
     val typeParameters: MutableList<TypeParameter>
 
-    fun typeParam(name: String, variance: Variance? = null, block: TypeParameter.() -> Unit = {}) {
+    fun addTypeParameter(name: String, variance: Variance? = null, block: TypeParameter.() -> Unit = {}) {
         typeParameters.add(TypeParameter(name, variance, block))
     }
 }

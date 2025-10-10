@@ -52,7 +52,7 @@ class Function(
 interface Functions {
     val members: MutableList<ClassMember>
 
-    fun function(name: String, receiver: Type? = null, returnType: Type? = null, block: Function.() -> Unit = {}) {
+    fun addFunction(name: String, receiver: Type? = null, returnType: Type? = null, block: Function.() -> Unit = {}) {
         members += Function(name, receiver, returnType, block)
     }
 }

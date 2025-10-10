@@ -23,7 +23,7 @@ class InitBlock(statements: List<Statement> = listOf()) : ClassMember, Block(sta
 interface InitBlocks {
     val members: MutableList<ClassMember>
 
-    fun init(vararg statements: String) {
+    fun addInit(vararg statements: String) {
         members += InitBlock(*statements)
     }
 }

@@ -7,10 +7,10 @@ class ComplexGenerationSpec : BddSpec({
     "file with class containing properties" {
         Given
         val file = KotlinFile("com.example.model") {
-            clas("User") {
-                property("id", type = Type("Long"))
-                property("name", type = StringType)
-                property("email", type = StringType)
+            addClass("User") {
+                addValProperty("id", type = Type("Long"))
+                addValProperty("name", type = StringType)
+                addValProperty("email", type = StringType)
             }
         }
 
@@ -33,16 +33,16 @@ class ComplexGenerationSpec : BddSpec({
     "file with class containing properties and functions" {
         Given
         val file = KotlinFile("com.example.math") {
-            clas("Calculator") {
-                varProperty("result", type = IntType)
+            addClass("Calculator") {
+                addVarProperty("result", type = IntType)
 
-                function("add", returnType = IntType) {
-                    param("a", IntType)
-                    param("b", IntType)
+                addFunction("add", returnType = IntType) {
+                    addParameter("a", IntType)
+                    addParameter("b", IntType)
                     body = ExpressionBody("a + b")
                 }
 
-                function("reset") {
+                addFunction("reset") {
                     body = FunctionBlock("result = 0")
                 }
             }
@@ -71,16 +71,16 @@ class ComplexGenerationSpec : BddSpec({
     "file with class containing properties, functions, and init block" {
         Given
         val file = KotlinFile("com.example.domain") {
-            import("kotlin.String")
+            addImport("kotlin.String")
 
-            clas("Person") {
-                property("firstName", type = StringType)
-                property("lastName", type = StringType)
-                varProperty("fullName", type = StringType)
+            addClass("Person") {
+                addValProperty("firstName", type = StringType)
+                addValProperty("lastName", type = StringType)
+                addVarProperty("fullName", type = StringType)
 
-                init("fullName = \"\$firstName \$lastName\"")
+                addInit("fullName = \"\$firstName \$lastName\"")
 
-                function("greet", returnType = StringType) {
+                addFunction("greet", returnType = StringType) {
                     body = ExpressionBody("\"Hello, I'm \$fullName\"")
                 }
             }
@@ -113,29 +113,29 @@ class ComplexGenerationSpec : BddSpec({
     "file with multiple classes and interfaces" {
         Given
         val file = KotlinFile("com.example.my") {
-            import("com.example.model.User")
-            import("kotlin.Long")
+            addImport("com.example.model.User")
+            addImport("kotlin.Long")
 
-            inter("Repository") {
-                typeParam("T")
+            addInterface("Repository") {
+                addTypeParameter("T")
 
-                function("save") {
-                    param("entity", Type("T"))
+                addFunction("save") {
+                    addParameter("entity", Type("T"))
                 }
 
-                function("findById", returnType = Type("T", nullable = true)) {
-                    param("id", Type("Long"))
+                addFunction("findById", returnType = Type("T", nullable = true)) {
+                    addParameter("id", Type("Long"))
                 }
             }
 
-            clas("UserRepository") {
+            addClass("UserRepository") {
                 superType("Repository") {
                     typeArg("User")
                 }
 
-                function("save") {
-                    modifier(Modifier.Override)
-                    param("entity", Type("User"))
+                addFunction("save") {
+                    addModifiers(Modifier.Override)
+                    addParameter("entity", Type("User"))
                     body = FunctionBlock("// Save user to database")
                 }
             }
@@ -169,13 +169,13 @@ class ComplexGenerationSpec : BddSpec({
     "file with top-level properties and functions" {
         Given
         val file = KotlinFile("com.example.utils") {
-            property("DEFAULT_TIMEOUT", type = Type("Long")) {
-                modifier(Modifier.Const)
+            addValProperty("DEFAULT_TIMEOUT", type = Type("Long")) {
+                addModifiers(Modifier.Const)
                 initializer = ExpressionBody("5000L")
             }
 
-            function("formatMessage", returnType = StringType) {
-                param("message", StringType)
+            addFunction("formatMessage", returnType = StringType) {
+                addParameter("message", StringType)
                 body = ExpressionBody($$"\"[APP] $message\"")
             }
         }
@@ -197,24 +197,24 @@ class ComplexGenerationSpec : BddSpec({
     "large file with many declarations" {
         Given
         val file = KotlinFile("com.example.ecommerce") {
-            import("kotlin.collections.mutableListOf")
-            import("kotlin.collections.List")
-            import("kotlin.collections.MutableList")
+            addImport("kotlin.collections.mutableListOf")
+            addImport("kotlin.collections.List")
+            addImport("kotlin.collections.MutableList")
 
-            clas("Product") {
-                modifier(Modifier.Data)
+            addClass("Product") {
+                addModifiers(Modifier.Data)
                 primaryConstructor = PrimaryConstructor {
-                    valProperty("id", type = StringType)
-                    valProperty("name", type = StringType)
-                    valProperty("price", type = DoubleType)
+                    addValProperty("id", type = StringType)
+                    addValProperty("name", type = StringType)
+                    addValProperty("price", type = DoubleType)
                 }
             }
 
-            inter("ProductService") {
-                function("getAllProducts", returnType = Type("List", Type("Product")))
+            addInterface("ProductService") {
+                addFunction("getAllProducts", returnType = Type("List", Type("Product")))
 
-                function("getProductById", returnType = Type("Product?")) {
-                    param("id", StringType)
+                addFunction("getProductById", returnType = Type("Product?")) {
+                    addParameter("id", StringType)
                     body = FunctionBlock(
                         "val a = 10",
                         """
@@ -227,15 +227,15 @@ class ComplexGenerationSpec : BddSpec({
                 }
             }
 
-            clas("ProductServiceImpl") {
+            addClass("ProductServiceImpl") {
                 superType("ProductService")
 
-                varProperty("products", type = Type("MutableList", Type("Product")))
+                addVarProperty("products", type = Type("MutableList", Type("Product")))
 
-                init("products = mutableListOf()")
+                addInit("products = mutableListOf()")
 
-                function("getAllProducts", returnType = Type("List", Type("Product"))) {
-                    modifier(Modifier.Override)
+                addFunction("getAllProducts", returnType = Type("List", Type("Product"))) {
+                    addModifiers(Modifier.Override)
                     body = ExpressionBody("products")
                 }
             }

@@ -27,7 +27,7 @@ class Constructor(
 interface Constructors {
     val members: MutableList<ClassMember>
 
-    fun constructor(block: Constructor.() -> Unit = {}) {
+    fun addConstructor(block: Constructor.() -> Unit = {}) {
         members += Constructor(block)
     }
 }

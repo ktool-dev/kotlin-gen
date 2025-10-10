@@ -24,7 +24,7 @@ fun Collection<Modifier>.write(writer: CodeWriter) {
 interface Modifiers {
     val modifiers: MutableList<Modifier>
 
-    fun modifier(vararg m: Modifier) {
+    fun addModifiers(vararg m: Modifier) {
         modifiers.addAll(m.toList())
     }
 }

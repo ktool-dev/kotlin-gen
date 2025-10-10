@@ -19,42 +19,50 @@ class KotlinFile(
     val imports: MutableList<Import> = imports.toMutableList()
     val members: MutableList<TopLevelDeclaration> = members.toMutableList()
 
-    fun import(packagePath: String, alias: String? = null) {
+    fun addImport(packagePath: String, alias: String? = null) {
         imports += Import(packagePath, alias)
     }
 
-    fun clas(name: String, primaryConstructor: PrimaryConstructor? = null, block: Class.() -> Unit) {
+    fun addClass(name: String, primaryConstructor: PrimaryConstructor? = null, block: Class.() -> Unit) {
         members += Class(name, primaryConstructor, block)
     }
 
-    fun obj(name: String, block: Object.() -> Unit) {
+    fun addObject(name: String, block: Object.() -> Unit) {
         members += Object(name, block)
     }
 
-    fun inter(name: String, block: Interface.() -> Unit) {
+    fun addInterface(name: String, block: Interface.() -> Unit) {
         members += Interface(name, block)
     }
 
-    fun typeAlias(name: String, type: Type, block: TypeAlias.() -> Unit) {
+    fun addTypeAlias(name: String, type: Type, block: TypeAlias.() -> Unit) {
         members += TypeAlias(name, type)
     }
 
-    fun function(name: String, receiver: Type? = null, returnType: Type? = null, block: Function.() -> Unit) {
+    fun addFunction(name: String, receiver: Type? = null, returnType: Type? = null, block: Function.() -> Unit) {
         members += Function(name, receiver, returnType, block)
     }
 
-    fun literal(code: String) {
+    fun addLiteral(code: String) {
         members += Literal(code)
     }
 
-    override fun property(
+    override fun addValProperty(
         name: String,
-        mutability: Mutability,
         type: Type?,
         initializer: ExpressionBody?,
         block: Property.() -> Unit
     ) {
-        members += Property(name, mutability, type, initializer, block)
+        members += Property(name, Mutability.Val, type, initializer, block)
+    }
+
+    override fun addVarProperty(
+        name: String,
+        type: Type?,
+        initializer: ExpressionBody?,
+        block: Property.() -> Unit
+    ) {
+        members += Property(name, Mutability.Var, type, initializer, block)
     }
 
     override fun write(writer: CodeWriter) {

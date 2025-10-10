@@ -87,41 +87,37 @@ class PropertySetter(
 interface Properties : SpecificProperties {
     val members: MutableList<ClassMember>
 
-    override fun property(
+    override fun addValProperty(
         name: String,
-        mutability: Mutability,
         type: Type?,
         initializer: ExpressionBody?,
         block: Property.() -> Unit,
     ) {
-        members += Property(name, mutability, type, initializer, block)
+        members += Property(name, Mutability.Val, type, initializer, block)
+    }
+
+    override fun addVarProperty(
+        name: String,
+        type: Type?,
+        initializer: ExpressionBody?,
+        block: Property.() -> Unit,
+    ) {
+        members += Property(name, Mutability.Var, type, initializer, block)
     }
 }
 
 interface SpecificProperties {
-    fun property(
+    fun addValProperty(
         name: String,
-        mutability: Mutability = Mutability.Val,
         type: Type? = null,
         initializer: ExpressionBody? = null,
         block: Property.() -> Unit = {},
     )
 
-    fun valProperty(
+    fun addVarProperty(
         name: String,
         type: Type? = null,
         initializer: ExpressionBody? = null,
-        block: Property.() -> Unit = {}
-    ) {
-        property(name, Mutability.Val, type, initializer, block)
-    }
-
-    fun varProperty(
-        name: String,
-        type: Type? = null,
-        initializer: ExpressionBody? = null,
-        block: Property.() -> Unit = {}
-    ) {
-        property(name, Mutability.Var, type, initializer, block)
-    }
+        block: Property.() -> Unit = {},
+    )
 }

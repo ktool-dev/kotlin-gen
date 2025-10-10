@@ -47,7 +47,7 @@ fun List<Type>.writeSuperTypes(writer: CodeWriter) {
 interface Classes {
     val members: MutableList<ClassMember>
 
-    fun clas(name: String, primaryConstructor: PrimaryConstructor? = null, block: Class.() -> Unit = {}) {
+    fun addClass(name: String, primaryConstructor: PrimaryConstructor? = null, block: Class.() -> Unit = {}) {
         members += Class(name, primaryConstructor, block)
     }
 }

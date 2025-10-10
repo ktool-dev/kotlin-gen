@@ -42,7 +42,7 @@ fun List<Parameter>.write(writer: CodeWriter, nothingIfEmpty: Boolean = false) {
 interface Parameters {
     val parameters: MutableList<Parameter>
 
-    fun param(name: String, type: Type, returnType: ExpressionBody? = null, block: Parameter.() -> Unit = {}) {
+    fun addParameter(name: String, type: Type, returnType: ExpressionBody? = null, block: Parameter.() -> Unit = {}) {
         parameters += Parameter(name, type, returnType, block)
     }
 }

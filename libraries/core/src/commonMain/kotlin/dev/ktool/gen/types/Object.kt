@@ -28,7 +28,7 @@ class Object(
 interface Objects {
     val members: MutableList<ClassMember>
 
-    fun obj(name: String, block: Object.() -> Unit = {}) {
+    fun addObject(name: String, block: Object.() -> Unit = {}) {
         members += Object(name, block)
     }
 }

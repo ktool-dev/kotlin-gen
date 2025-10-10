@@ -35,7 +35,7 @@ class Interface(
 interface Interfaces {
     val members: MutableList<ClassMember>
 
-    fun inter(name: String, block: Interface.() -> Unit = {}) {
+    fun addInterface(name: String, block: Interface.() -> Unit = {}) {
         members += Interface(name, block)
     }
 }

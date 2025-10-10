@@ -17,14 +17,22 @@ class PrimaryConstructor(
         block()
     }
 
-    override fun property(
+    override fun addValProperty(
         name: String,
-        mutability: Mutability,
         type: Type?,
         initializer: ExpressionBody?,
-        block: Property.() -> Unit,
+        block: Property.() -> Unit
     ) {
-        properties += Property(name, mutability, type, initializer, block)
+        properties += Property(name, Mutability.Val, type, initializer, block)
+    }
+
+    override fun addVarProperty(
+        name: String,
+        type: Type?,
+        initializer: ExpressionBody?,
+        block: Property.() -> Unit
+    ) {
+        properties += Property(name, Mutability.Var, type, initializer, block)
     }
 
     override fun write(writer: CodeWriter) {
