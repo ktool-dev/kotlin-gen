@@ -129,8 +129,8 @@ class ComplexGenerationSpec : BddSpec({
             }
 
             addClass("UserRepository") {
-                superType("Repository") {
-                    typeArg("User")
+                addSuperType("Repository") {
+                    addTypeArgument("User")
                 }
 
                 addFunction("save") {
@@ -228,7 +228,7 @@ class ComplexGenerationSpec : BddSpec({
             }
 
             addClass("ProductServiceImpl") {
-                superType("ProductService")
+                addSuperType("ProductService")
 
                 addVarProperty("products", type = Type("MutableList", Type("Product")))
 

@@ -78,7 +78,7 @@ fun List<WritableType>.write(writer: CodeWriter) {
 interface TypeArguments {
     val typeArguments: MutableList<Type>
 
-    fun typeArg(name: String, nullable: Boolean = false, block: Type.() -> Unit = {}) {
+    fun addTypeArgument(name: String, nullable: Boolean = false, block: Type.() -> Unit = {}) {
         typeArguments.add(Type(name, nullable, block))
     }
 }
@@ -86,7 +86,7 @@ interface TypeArguments {
 interface SuperTypes {
     val superTypes: MutableList<Type>
 
-    fun superType(name: String, block: Type.() -> Unit = {}) {
+    fun addSuperType(name: String, block: Type.() -> Unit = {}) {
         superTypes.add(Type(name, false, block))
     }
 }
