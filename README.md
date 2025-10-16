@@ -19,7 +19,7 @@ build Kotlin declarations using a fluent API that ensures proper formatting, ind
 
 ```kotlin
 dependencies {
-    implementation("dev.ktool:kotlin-gen:0.0.0")
+    implementation("dev.ktool:kotlin-gen:0.2.1")
 }
 ```
 
