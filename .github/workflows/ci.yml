@@ -85,7 +85,6 @@ jobs:
             sed -i '' 's/val version = ".*"/val version = "${{ needs.build.outputs.new_tag }}"/' libraries/core/build.gradle.kts
           else
             sed -i 's/val version = ".*"/val version = "${{ needs.build.outputs.new_tag }}"/' libraries/core/build.gradle.kts
-            sed -i 's/val version = ".*"/val version = "${{ needs.build.outputs.new_tag }}"/' libraries/core/build.gradle.kts
           fi
 
       - name: Publish to Maven Central
