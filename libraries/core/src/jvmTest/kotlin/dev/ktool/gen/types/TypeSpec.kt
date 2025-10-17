@@ -28,8 +28,9 @@ class TypeSpec : BddSpec({
 
     "type with single type argument" {
         Given
-        val type = Type("List")
-        type.typeArguments.add(StringType)
+        val type = Type("List") {
+            +TypeArgument("String")
+        }
 
         When
         val output = type.render()
@@ -40,9 +41,10 @@ class TypeSpec : BddSpec({
 
     "type with multiple type arguments" {
         Given
-        val type = Type("Map")
-        type.typeArguments.add(StringType)
-        type.typeArguments.add(IntType)
+        val type = Type("Map") {
+            +TypeArgument("String")
+            +TypeArgument("Int")
+        }
 
         When
         val output = type.render()
@@ -53,8 +55,9 @@ class TypeSpec : BddSpec({
 
     "nullable type with type arguments" {
         Given
-        val type = Type("List", nullable = true)
-        type.typeArguments.add(StringType)
+        val type = Type("List", nullable = true) {
+            +TypeArgument("String")
+        }
 
         When
         val output = type.render()
@@ -65,14 +68,14 @@ class TypeSpec : BddSpec({
 
     "nested type arguments" {
         Given
-        val innerType = StringType
-        val listType = Type("List")
-        listType.typeArguments.add(innerType)
-        val outerType = Type("Set")
-        outerType.typeArguments.add(listType)
+        val type = Type("Set") {
+            +TypeArgument("List") {
+                +TypeArgument("String")
+            }
+        }
 
         When
-        val output = outerType.render()
+        val output = type.render()
 
         Then
         output shouldBe "Set<List<String>>"

@@ -2,28 +2,17 @@ package dev.ktool.gen.types
 
 import dev.ktool.gen.CodeWriter
 
-class InitBlock(statements: List<Statement> = listOf()) : ClassMember, Block(statements) {
+class InitBlock(statements: List<Statement> = listOf(), init: InitBlock.() -> Unit = {}) : ClassMember,
+    Block(statements) {
     constructor(vararg statements: Statement) : this(statements.toList())
     constructor(vararg statement: String) : this(statement.toList().map { it.toStatement() })
 
-    fun statement(vararg statements: Statement) {
-        this.statements.addAll(statements)
-    }
-
-    fun statement(vararg statements: String) {
-        statement(*statements.map { it.toStatement() }.toTypedArray())
+    init {
+        init()
     }
 
     override fun write(writer: CodeWriter) {
         writer.write("init")
         super.write(writer)
-    }
-}
-
-interface InitBlocks {
-    val members: MutableList<ClassMember>
-
-    fun addInit(vararg statements: String) {
-        members += InitBlock(*statements)
     }
 }

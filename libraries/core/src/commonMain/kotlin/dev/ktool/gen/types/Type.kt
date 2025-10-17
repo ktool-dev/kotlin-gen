@@ -23,30 +23,24 @@ val BooleanRangeType: Type get() = Type("Boolean")
 val EnumRangeType: Type get() = Type("Enum")
 val UnitType: Type get() = Type("Unit")
 
-class Type(
+open class Type(
     var name: String,
     var nullable: Boolean = false,
-    typeArguments: List<Type> = listOf(),
-) : WritableType, TypeArguments {
-    constructor(name: String, vararg typeArgument: Type) : this(
-        name,
-        false,
-        typeArgument.toList()
-    )
+    typeArguments: List<TypeArgument> = listOf(),
+    block: Type.() -> Unit = {},
+) : WritableType {
+    constructor(
+        name: String,
+        typeArgument: TypeArgument,
+        block: Type.() -> Unit = {},
+    ) : this(name, false, listOf(typeArgument), block)
 
-    constructor(name: String, nullable: Boolean = false, vararg typeArgument: Type) : this(
-        name,
-        nullable,
-        typeArgument.toList()
-    )
+    private val typeArguments: MutableList<TypeArgument> = typeArguments.toMutableList()
 
-    constructor(name: String, nullable: Boolean = false, block: Type.() -> Unit) : this(name, nullable) {
-        block()
-    }
-
-    override var typeArguments: MutableList<Type> = typeArguments.toMutableList()
+    operator fun TypeArgument.unaryPlus() = apply { typeArguments += this }
 
     init {
+        block()
         if (name.endsWith("?")) {
             name = name.removeSuffix("?")
             nullable = true
@@ -62,6 +56,20 @@ class Type(
     }
 }
 
+class TypeArgument(
+    name: String,
+    nullable: Boolean = false,
+    typeArgs: List<TypeArgument> = listOf(),
+    block: Type.() -> Unit = {},
+) : Type(name, nullable, typeArgs, block)
+
+class SuperType(
+    name: String,
+    nullable: Boolean = false,
+    typeArgs: List<TypeArgument> = listOf(),
+    block: Type.() -> Unit = {},
+) : Type(name, nullable, typeArgs, block)
+
 interface WritableType : Writable
 
 fun List<WritableType>.write(writer: CodeWriter) {
@@ -75,23 +83,7 @@ fun List<WritableType>.write(writer: CodeWriter) {
     }
 }
 
-interface TypeArguments {
-    val typeArguments: MutableList<Type>
-
-    fun addTypeArgument(name: String, nullable: Boolean = false, block: Type.() -> Unit = {}) {
-        typeArguments.add(Type(name, nullable, block))
-    }
-}
-
-interface SuperTypes {
-    val superTypes: MutableList<Type>
-
-    fun addSuperType(name: String, block: Type.() -> Unit = {}) {
-        superTypes.add(Type(name, false, block))
-    }
-}
-
-fun KClass<*>.createType(nullable: Boolean = false, typeArguments: List<Type> = listOf()): Type {
+fun KClass<*>.createType(nullable: Boolean = false, typeArguments: List<TypeArgument> = listOf()): Type {
     val packageName = qualifiedName?.substringBeforeLast('.')
     val name = if (packageName in AUTO_IMPORTED_PACKAGES) {
         simpleName
@@ -110,7 +102,7 @@ private val AUTO_IMPORTED_PACKAGES = setOf(
     "kotlin.io",
     "kotlin.ranges",
     "kotlin.sequences",
-    "kotin.text",
+    "kotlin.text",
     "kotlin.math",
     "java.lang",
     "kotlin.jvm",

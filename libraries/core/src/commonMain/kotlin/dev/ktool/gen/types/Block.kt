@@ -3,11 +3,18 @@ package dev.ktool.gen.types
 import dev.ktool.gen.CodeWriter
 import dev.ktool.gen.Writable
 
-open class Block(statements: List<Statement> = listOf()) : Writable {
+open class Block(statements: List<Statement> = listOf(), block: Block.() -> Unit = {}) : Writable {
     constructor(vararg statements: Statement) : this(statements.toList())
     constructor(vararg statement: String) : this(statement.toList().map { it.toStatement() })
 
-    var statements: MutableList<Statement> = statements.toMutableList()
+    val statements: MutableList<Statement> = statements.toMutableList()
+
+    init {
+        block()
+    }
+
+    operator fun Statement.unaryPlus() = apply { statements += this }
+    operator fun String.unaryPlus() = apply { statements += toStatement() }
 
     override fun write(writer: CodeWriter) {
         writer.write(" {")

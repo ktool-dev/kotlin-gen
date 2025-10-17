@@ -6,13 +6,16 @@ import dev.ktool.gen.safe
 class TypeParameter(
     var name: String,
     var variance: Variance? = null,
-    typeArguments: List<Type> = listOf(),
-) : WritableType, TypeArguments {
-    constructor(name: String, variance: Variance? = null, block: TypeParameter.() -> Unit) : this(name, variance) {
+    typeArguments: List<TypeArgument> = listOf(),
+    block: TypeParameter.() -> Unit = {},
+) : WritableType {
+    val typeArguments: MutableList<TypeArgument> = typeArguments.toMutableList()
+
+    init {
         block()
     }
 
-    override val typeArguments: MutableList<Type> = typeArguments.toMutableList()
+    operator fun TypeArgument.unaryPlus() = apply { typeArguments += this }
 
     override fun write(writer: CodeWriter) {
         variance?.let { writer.write("$it ") }
@@ -24,13 +27,5 @@ class TypeParameter(
                 bound.write(writer)
             }
         }
-    }
-}
-
-interface TypeParameters {
-    val typeParameters: MutableList<TypeParameter>
-
-    fun addTypeParameter(name: String, variance: Variance? = null, block: TypeParameter.() -> Unit = {}) {
-        typeParameters.add(TypeParameter(name, variance, block))
     }
 }

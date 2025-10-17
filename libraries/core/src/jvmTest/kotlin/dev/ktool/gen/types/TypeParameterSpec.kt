@@ -17,8 +17,9 @@ class TypeParameterSpec : BddSpec({
 
     "type parameter with single bound" {
         Given
-        val typeParam = TypeParameter("T")
-        typeParam.typeArguments.add(Type("Number"))
+        val typeParam = TypeParameter("T") {
+            +TypeArgument("Number")
+        }
 
         When
         val output = typeParam.render()
@@ -29,9 +30,10 @@ class TypeParameterSpec : BddSpec({
 
     "type parameter with multiple bounds" {
         Given
-        val typeParam = TypeParameter("T")
-        typeParam.typeArguments.add(Type("Comparable"))
-        typeParam.typeArguments.add(Type("Serializable"))
+        val typeParam = TypeParameter("T") {
+            +TypeArgument("Comparable")
+            +TypeArgument("Serializable")
+        }
 
         When
         val output = typeParam.render()
@@ -64,8 +66,9 @@ class TypeParameterSpec : BddSpec({
 
     "type parameter with variance and bound" {
         Given
-        val typeParam = TypeParameter("T", variance = Variance.Out)
-        typeParam.typeArguments.add(Type("Any"))
+        val typeParam = TypeParameter("T", variance = Variance.Out) {
+            +TypeArgument("Any")
+        }
 
         When
         val output = typeParam.render()

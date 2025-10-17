@@ -17,8 +17,7 @@ class InterfaceSpec : BddSpec({
 
     "interface with modifier" {
         Given
-        val iFace = Interface("Internal")
-        iFace.modifiers.add(Modifier.Internal)
+        val iFace = Interface("Internal", listOf(Modifier.Internal))
 
         When
         val output = iFace.render()
@@ -29,8 +28,9 @@ class InterfaceSpec : BddSpec({
 
     "interface with type parameter" {
         Given
-        val iFace = Interface("Container")
-        iFace.typeParameters.add(TypeParameter("T"))
+        val iFace = Interface("Container") {
+            +TypeParameter("T")
+        }
 
         When
         val output = iFace.render()
@@ -41,9 +41,10 @@ class InterfaceSpec : BddSpec({
 
     "interface with multiple type parameters" {
         Given
-        val iFace = Interface("Mapper")
-        iFace.typeParameters.add(TypeParameter("K"))
-        iFace.typeParameters.add(TypeParameter("V"))
+        val iFace = Interface("Mapper") {
+            +TypeParameter("K")
+            +TypeParameter("V")
+        }
 
         When
         val output = iFace.render()
@@ -54,8 +55,9 @@ class InterfaceSpec : BddSpec({
 
     "interface with single supertype" {
         Given
-        val iFace = Interface("MutableList")
-        iFace.superTypes.add(Type("List"))
+        val iFace = Interface("MutableList") {
+            +SuperType("List")
+        }
 
         When
         val output = iFace.render()
@@ -66,9 +68,10 @@ class InterfaceSpec : BddSpec({
 
     "interface with multiple supertypes" {
         Given
-        val iFace = Interface("Serializable")
-        iFace.superTypes.add(Type("Readable"))
-        iFace.superTypes.add(Type("Writable"))
+        val iFace = Interface("Serializable") {
+            +SuperType("Readable")
+            +SuperType("Writable")
+        }
 
         When
         val output = iFace.render()
@@ -79,8 +82,9 @@ class InterfaceSpec : BddSpec({
 
     "interface with function member" {
         Given
-        val iFace = Interface("Clickable")
-        iFace.members.add(Function("onClick"))
+        val iFace = Interface("Clickable") {
+            +Function("onClick")
+        }
 
         When
         val output = iFace.render()
@@ -95,8 +99,9 @@ class InterfaceSpec : BddSpec({
 
     "interface with property member" {
         Given
-        val iFace = Interface("Named")
-        iFace.members.add(Property("name", type = StringType))
+        val iFace = Interface("Named") {
+            +Property("name", type = StringType)
+        }
 
         When
         val output = iFace.render()
@@ -111,11 +116,12 @@ class InterfaceSpec : BddSpec({
 
     "interface with all features" {
         Given
-        val iFace = Interface("Repository")
-        iFace.typeParameters.add(TypeParameter("T"))
-        iFace.superTypes.add(Type("AutoCloseable"))
-        iFace.members.add(Function("save"))
-        iFace.members.add(Property("count", type = IntType))
+        val iFace = Interface("Repository") {
+            +TypeParameter("T")
+            +SuperType("AutoCloseable")
+            +Function("save")
+            +Property("count", type = IntType)
+        }
 
         When
         val output = iFace.render()

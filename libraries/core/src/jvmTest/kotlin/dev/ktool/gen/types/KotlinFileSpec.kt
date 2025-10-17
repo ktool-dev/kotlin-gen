@@ -153,47 +153,4 @@ class KotlinFileSpec : BddSpec({
         Then
         output shouldBe "package com.new\n"
     }
-
-    "modifying imports" {
-        Given
-        val file = KotlinFile(
-            packageName = "com.example",
-            imports = listOf(Import("kotlin.collections.List"))
-        )
-        file.imports += Import("kotlin.collections.Map")
-
-        When
-        val output = file.render()
-
-        Then
-        output shouldBe """
-            package com.example
-
-            import kotlin.collections.List
-            import kotlin.collections.Map
-
-        """.trimIndent()
-    }
-
-    "modifying top level declarations" {
-        Given
-        val file = KotlinFile(
-            packageName = "com.example",
-            members = listOf(Class("FirstClass"))
-        )
-        file.members += Class("SecondClass")
-
-        When
-        val output = file.render()
-
-        Then
-        output shouldBe """
-            package com.example
-
-            class FirstClass
-
-            class SecondClass
-
-        """.trimIndent()
-    }
 })

@@ -8,21 +8,24 @@ class Class(
     var primaryConstructor: PrimaryConstructor? = null,
     modifiers: List<Modifier> = listOf(),
     typeParameters: List<TypeParameter> = listOf(),
-    superTypes: List<Type> = listOf(),
-    members: List<ClassMember> = listOf()
-) : TopLevelDeclaration, Modifiers, TypeParameters, ClassMember, SuperTypes, TypeMembers, InitBlocks,
-    Objects, Constructors {
-    constructor(name: String, primaryConstructor: PrimaryConstructor? = null, block: Class.() -> Unit) : this(
-        name,
-        primaryConstructor
-    ) {
+    superTypes: List<SuperType> = listOf(),
+    members: List<ClassMember> = listOf(),
+    block: Class.() -> Unit = {},
+) : TopLevelDeclaration, ClassMember {
+    val modifiers: MutableList<Modifier> = modifiers.toMutableList()
+    val typeParameters: MutableList<TypeParameter> = typeParameters.toMutableList()
+    val superTypes: MutableList<SuperType> = superTypes.toMutableList()
+    val members: MutableList<ClassMember> = members.toMutableList()
+
+    init {
         block()
     }
 
-    override val modifiers: MutableList<Modifier> = modifiers.toMutableList()
-    override val typeParameters: MutableList<TypeParameter> = typeParameters.toMutableList()
-    override val superTypes: MutableList<Type> = superTypes.toMutableList()
-    override val members: MutableList<ClassMember> = members.toMutableList()
+    operator fun Modifier.unaryPlus() = apply { modifiers += this }
+    operator fun List<Modifier>.unaryPlus() = apply { modifiers += this }
+    operator fun TypeParameter.unaryPlus() = apply { typeParameters += this }
+    operator fun SuperType.unaryPlus() = apply { superTypes += this }
+    operator fun ClassMember.unaryPlus() = apply { members += this }
 
     override fun write(writer: CodeWriter) {
         modifiers.write(writer)
@@ -41,13 +44,5 @@ fun List<Type>.writeSuperTypes(writer: CodeWriter) {
             if (index > 0) writer.write(", ")
             superType.write(writer)
         }
-    }
-}
-
-interface Classes {
-    val members: MutableList<ClassMember>
-
-    fun addClass(name: String, primaryConstructor: PrimaryConstructor? = null, block: Class.() -> Unit = {}) {
-        members += Class(name, primaryConstructor, block)
     }
 }

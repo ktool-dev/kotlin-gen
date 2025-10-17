@@ -36,34 +36,26 @@ kotlin {
     applyDefaultHierarchyTemplate()
 
     sourceSets {
-        val commonMain by getting {
-            dependencies {
-                implementation(libs.kotlin.logging)
-                implementation(libs.ktool.kotest.bdd)
-            }
+        commonMain.dependencies {
+            implementation(libs.kotlin.logging)
+            implementation(libs.ktool.kotest.bdd)
         }
 
-        val commonTest by getting {
-            dependencies {
-                implementation(kotlin("test"))
-                implementation(libs.kotlin.test)
-                implementation(libs.kotlinx.coroutines.test)
-                implementation(libs.kotest.framework.engine)
-                implementation(libs.kotest.assertions.core)
-            }
+        commonTest.dependencies {
+            implementation(kotlin("test"))
+            implementation(libs.kotlin.test)
+            implementation(libs.kotlinx.coroutines.test)
+            implementation(libs.kotest.framework.engine)
+            implementation(libs.kotest.assertions.core)
         }
 
-        val jvmMain by getting {
-            dependencies {
-                implementation(libs.kotlin.reflect)
-                implementation(libs.slf4j.simple)
-            }
+        jvmMain.dependencies {
+            implementation(libs.kotlin.reflect)
+            implementation(libs.slf4j.simple)
         }
 
-        val jvmTest by getting {
-            dependencies {
-                implementation(libs.kotest.runner.junit5)
-            }
+        jvmTest.dependencies {
+            implementation(libs.kotest.runner.junit5)
         }
     }
 }
@@ -79,8 +71,8 @@ object DeployConfig {
 }
 
 val javadocJar by tasks.registering(Jar::class) {
-    dependsOn(tasks.dokkaHtml)
-    from(tasks.dokkaHtml.flatMap { it.outputDirectory })
+    dependsOn(tasks.dokkaGeneratePublicationHtml)
+    from(tasks.dokkaGeneratePublicationHtml.flatMap { it.outputDirectory })
     archiveClassifier.set("javadoc")
 }
 

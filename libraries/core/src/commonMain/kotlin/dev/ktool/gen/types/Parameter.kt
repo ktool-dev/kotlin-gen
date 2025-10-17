@@ -9,16 +9,16 @@ class Parameter(
     var type: Type,
     var defaultValue: ExpressionBody? = null,
     modifiers: List<Modifier> = listOf(),
-) : Writable, Modifiers {
-    constructor(name: String, type: Type, defaultValue: ExpressionBody? = null, block: Parameter.() -> Unit) : this(
-        name,
-        type,
-        defaultValue
-    ) {
+    block: Parameter.() -> Unit = {},
+) : Writable {
+    val modifiers: MutableList<Modifier> = modifiers.toMutableList()
+
+    init {
         block()
     }
 
-    override val modifiers: MutableList<Modifier> = modifiers.toMutableList()
+    operator fun Modifier.unaryPlus() = apply { modifiers += this }
+    operator fun List<Modifier>.unaryPlus() = apply { modifiers += this }
 
     override fun write(writer: CodeWriter) {
         modifiers.write(writer)
@@ -37,12 +37,4 @@ fun List<Parameter>.write(writer: CodeWriter, nothingIfEmpty: Boolean = false) {
         param.write(writer)
     }
     writer.write(")")
-}
-
-interface Parameters {
-    val parameters: MutableList<Parameter>
-
-    fun addParameter(name: String, type: Type, returnType: ExpressionBody? = null, block: Parameter.() -> Unit = {}) {
-        parameters += Parameter(name, type, returnType, block)
-    }
 }

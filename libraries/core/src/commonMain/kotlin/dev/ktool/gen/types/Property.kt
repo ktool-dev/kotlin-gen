@@ -4,32 +4,24 @@ import dev.ktool.gen.CodeWriter
 import dev.ktool.gen.Writable
 import dev.ktool.gen.safe
 
-enum class Mutability {
-    Val, Var;
-
-    override fun toString(): String = name.lowercase()
-}
-
 class Property(
     var name: String,
-    var mutability: Mutability = Mutability.Val,
+    var mutable: Boolean = false,
     var type: Type? = null,
     var initializer: ExpressionBody? = null,
     var getter: PropertyGetter? = null,
     var setter: PropertySetter? = null,
     modifiers: List<Modifier> = listOf(),
-) : ClassMember, TopLevelDeclaration, Modifiers {
-    constructor(
-        name: String,
-        mutability: Mutability = Mutability.Val,
-        type: Type? = null,
-        initializer: ExpressionBody? = null,
-        block: Property.() -> Unit
-    ) : this(name = name, mutability = mutability, type = type, initializer = initializer) {
+    block: Property.() -> Unit = {},
+) : ClassMember, TopLevelDeclaration {
+    val modifiers: MutableList<Modifier> = modifiers.toMutableList()
+
+    init {
         block()
     }
 
-    override val modifiers: MutableList<Modifier> = modifiers.toMutableList()
+    operator fun Modifier.unaryPlus() = apply { modifiers += this }
+    operator fun List<Modifier>.unaryPlus() = apply { modifiers += this }
 
     init {
         if (type == null && initializer == null) {
@@ -39,7 +31,8 @@ class Property(
 
     override fun write(writer: CodeWriter) {
         modifiers.write(writer)
-        writer.write("$mutability ${name.safe}")
+        if (mutable) writer.write("var ") else writer.write("val ")
+        writer.write(name.safe)
 
         type?.let {
             writer.write(": ")
@@ -61,7 +54,10 @@ class PropertyGetter(
     modifiers: List<Modifier> = listOf(),
     var body: FunctionBody
 ) : Writable {
-    val modifiers: MutableList<Modifier> = modifiers.toMutableList()
+    private val modifiers: MutableList<Modifier> = modifiers.toMutableList()
+
+    operator fun Modifier.unaryPlus() = apply { modifiers += this }
+    operator fun List<Modifier>.unaryPlus() = apply { modifiers += this }
 
     override fun write(writer: CodeWriter) {
         writer.newLine()
@@ -75,49 +71,14 @@ class PropertySetter(
     var body: Block,
     var paramName: String = "newValue"
 ) : Writable {
-    val modifiers: MutableList<Modifier> = modifiers.toMutableList()
+    private val modifiers: MutableList<Modifier> = modifiers.toMutableList()
+
+    operator fun Modifier.unaryPlus() = apply { modifiers += this }
+    operator fun List<Modifier>.unaryPlus() = apply { modifiers += this }
 
     override fun write(writer: CodeWriter) {
         writer.newLine()
         writer.write("set(${paramName.safe})")
         body.write(writer)
     }
-}
-
-interface Properties : SpecificProperties {
-    val members: MutableList<ClassMember>
-
-    override fun addValProperty(
-        name: String,
-        type: Type?,
-        initializer: ExpressionBody?,
-        block: Property.() -> Unit,
-    ) {
-        members += Property(name, Mutability.Val, type, initializer, block)
-    }
-
-    override fun addVarProperty(
-        name: String,
-        type: Type?,
-        initializer: ExpressionBody?,
-        block: Property.() -> Unit,
-    ) {
-        members += Property(name, Mutability.Var, type, initializer, block)
-    }
-}
-
-interface SpecificProperties {
-    fun addValProperty(
-        name: String,
-        type: Type? = null,
-        initializer: ExpressionBody? = null,
-        block: Property.() -> Unit = {},
-    )
-
-    fun addVarProperty(
-        name: String,
-        type: Type? = null,
-        initializer: ExpressionBody? = null,
-        block: Property.() -> Unit = {},
-    )
 }

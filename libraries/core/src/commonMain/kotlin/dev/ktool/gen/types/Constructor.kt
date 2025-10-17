@@ -7,13 +7,18 @@ class Constructor(
     parameters: List<Parameter> = listOf(),
     var thisParams: List<String> = listOf(),
     var body: Block? = null,
-) : ClassMember, Modifiers, Parameters {
-    constructor(block: Constructor.() -> Unit) : this() {
-        block()
+    init: Constructor.() -> Unit = {},
+) : ClassMember {
+    val modifiers: MutableList<Modifier> = modifiers.toMutableList()
+    val parameters: MutableList<Parameter> = parameters.toMutableList()
+
+    init {
+        init()
     }
 
-    override var modifiers: MutableList<Modifier> = modifiers.toMutableList()
-    override var parameters: MutableList<Parameter> = parameters.toMutableList()
+    operator fun Modifier.unaryPlus() = apply { modifiers += this }
+    operator fun List<Modifier>.unaryPlus() = apply { modifiers += this }
+    operator fun Parameter.unaryPlus() = apply { parameters += this }
 
     override fun write(writer: CodeWriter) {
         modifiers.write(writer)
@@ -21,13 +26,5 @@ class Constructor(
         parameters.write(writer)
         writer.write(" : this(${thisParams.joinToString(", ")})")
         body?.write(writer)
-    }
-}
-
-interface Constructors {
-    val members: MutableList<ClassMember>
-
-    fun addConstructor(block: Constructor.() -> Unit = {}) {
-        members += Constructor(block)
     }
 }

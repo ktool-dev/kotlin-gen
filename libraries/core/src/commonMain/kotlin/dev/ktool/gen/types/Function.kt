@@ -11,18 +11,20 @@ class Function(
     modifiers: List<Modifier> = listOf(),
     typeParameters: List<TypeParameter> = listOf(),
     parameters: List<Parameter> = listOf(),
-) : ClassMember, TopLevelDeclaration, TypeParameters, Modifiers, Parameters {
-    constructor(name: String, receiver: Type? = null, returnType: Type? = null, block: Function.() -> Unit) : this(
-        name,
-        receiver,
-        returnType
-    ) {
+    block: Function.() -> Unit = {},
+) : ClassMember, TopLevelDeclaration {
+    val modifiers: MutableList<Modifier> = modifiers.toMutableList()
+    val typeParameters: MutableList<TypeParameter> = typeParameters.toMutableList()
+    val parameters: MutableList<Parameter> = parameters.toMutableList()
+
+    init {
         block()
     }
 
-    override var modifiers: MutableList<Modifier> = modifiers.toMutableList()
-    override var typeParameters: MutableList<TypeParameter> = typeParameters.toMutableList()
-    override var parameters: MutableList<Parameter> = parameters.toMutableList()
+    operator fun TypeParameter.unaryPlus() = apply { typeParameters += this }
+    operator fun Parameter.unaryPlus() = apply { parameters += this }
+    operator fun Modifier.unaryPlus() = apply { modifiers += this }
+    operator fun List<Modifier>.unaryPlus() = apply { modifiers += this }
 
     override fun write(writer: CodeWriter) {
         modifiers.write(writer)
@@ -46,13 +48,5 @@ class Function(
         }
 
         body?.write(writer)
-    }
-}
-
-interface Functions {
-    val members: MutableList<ClassMember>
-
-    fun addFunction(name: String, receiver: Type? = null, returnType: Type? = null, block: Function.() -> Unit = {}) {
-        members += Function(name, receiver, returnType, block)
     }
 }

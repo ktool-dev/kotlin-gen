@@ -7,14 +7,19 @@ class TypeAlias(
     var name: String,
     var type: Type,
     modifiers: List<Modifier> = listOf(),
-    typeParameters: List<TypeParameter> = listOf()
-) : TopLevelDeclaration, Modifiers, TypeParameters {
-    constructor(name: String, type: Type, block: TypeAlias.() -> Unit) : this(name, type) {
+    typeParameters: List<TypeParameter> = listOf(),
+    block: TypeAlias.() -> Unit = {},
+) : TopLevelDeclaration {
+    val modifiers: MutableList<Modifier> = modifiers.toMutableList()
+    val typeParameters: MutableList<TypeParameter> = typeParameters.toMutableList()
+
+    init {
         block()
     }
 
-    override val modifiers: MutableList<Modifier> = modifiers.toMutableList()
-    override val typeParameters: MutableList<TypeParameter> = typeParameters.toMutableList()
+    operator fun Modifier.unaryPlus() = apply { modifiers += this }
+    operator fun List<Modifier>.unaryPlus() = apply { modifiers += this }
+    operator fun TypeParameter.unaryPlus() = apply { typeParameters += this }
 
     override fun write(writer: CodeWriter) {
         modifiers.write(writer)

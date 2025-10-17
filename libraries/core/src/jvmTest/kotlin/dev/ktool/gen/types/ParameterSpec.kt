@@ -40,8 +40,9 @@ class ParameterSpec : BddSpec({
 
     "parameter with vararg modifier" {
         Given
-        val param = Parameter("items", StringType)
-        param.modifiers.add(Modifier.Vararg)
+        val param = Parameter("items", StringType) {
+            +Modifier.Vararg
+        }
 
         When
         val output = param.render()
@@ -52,8 +53,9 @@ class ParameterSpec : BddSpec({
 
     "parameter with crossinline modifier" {
         Given
-        val param = Parameter("block", Type("Function"))
-        param.modifiers.add(Modifier.Crossinline)
+        val param = Parameter("block", Type("Function")) {
+            +Modifier.Crossinline
+        }
 
         When
         val output = param.render()
@@ -75,8 +77,9 @@ class ParameterSpec : BddSpec({
 
     "parameter with generic type" {
         Given
-        val listType = Type("List")
-        listType.typeArguments.add(StringType)
+        val listType = Type("List") {
+            +TypeArgument("String")
+        }
         val param = Parameter("items", listType)
 
         When

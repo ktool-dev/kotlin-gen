@@ -139,8 +139,9 @@ class FunctionSpec : BddSpec({
 
     "function with modifier" {
         Given
-        val func = Function("execute")
-        func.modifiers.add(Modifier.Private)
+        val func = Function("execute") {
+            +Modifier.Private
+        }
 
         When
         val output = func.render()
@@ -151,9 +152,9 @@ class FunctionSpec : BddSpec({
 
     "function with multiple modifiers" {
         Given
-        val func = Function("doWork")
-        func.modifiers.add(Modifier.Override)
-        func.modifiers.add(Modifier.Suspend)
+        val func = Function("doWork") {
+            +listOf(Modifier.Override, Modifier.Suspend)
+        }
 
         When
         val output = func.render()
@@ -164,10 +165,11 @@ class FunctionSpec : BddSpec({
 
     "function with single type parameter" {
         Given
-        val func = Function("identity")
-        func.typeParameters.add(TypeParameter("T"))
-        func.parameters.add(Parameter("value", Type("T")))
-        func.returnType = Type("T")
+        val func = Function("identity") {
+            +TypeParameter("T")
+            +Parameter("value", Type("T"))
+            returnType = Type("T")
+        }
 
         When
         val output = func.render()
@@ -178,12 +180,16 @@ class FunctionSpec : BddSpec({
 
     "function with multiple type parameters" {
         Given
-        val func = Function("pair")
-        func.typeParameters.add(TypeParameter("A"))
-        func.typeParameters.add(TypeParameter("B"))
-        func.parameters.add(Parameter("first", Type("A")))
-        func.parameters.add(Parameter("second", Type("B")))
-        func.returnType = Type("Pair", typeArguments = listOf(Type("A"), Type("B")))
+        val func = Function("pair") {
+            +TypeParameter("A")
+            +TypeParameter("B")
+            +Parameter("first", Type("A"))
+            +Parameter("second", Type("B"))
+            returnType = Type("Pair") {
+                +TypeArgument("A")
+                +TypeArgument("B")
+            }
+        }
 
         When
         val output = func.render()
@@ -342,8 +348,9 @@ class FunctionSpec : BddSpec({
 
     "modifying parameters" {
         Given
-        val func = Function("process")
-        func.parameters.add(Parameter("data", StringType))
+        val func = Function("process") {
+            +Parameter("data", StringType)
+        }
 
         When
         val output = func.render()

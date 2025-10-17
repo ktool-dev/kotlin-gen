@@ -17,8 +17,9 @@ class ConstructorSpec : BddSpec({
 
     "constructor with single parameter" {
         Given
-        val constructor = Constructor()
-        constructor.parameters.add(Parameter("name", StringType))
+        val constructor = Constructor {
+            +Parameter("name", StringType)
+        }
 
         When
         val output = constructor.render()
@@ -29,9 +30,10 @@ class ConstructorSpec : BddSpec({
 
     "constructor with multiple parameters" {
         Given
-        val constructor = Constructor()
-        constructor.parameters.add(Parameter("x", IntType))
-        constructor.parameters.add(Parameter("y", IntType))
+        val constructor = Constructor {
+            +Parameter("x", IntType)
+            +Parameter("y", IntType)
+        }
 
         When
         val output = constructor.render()
@@ -42,9 +44,10 @@ class ConstructorSpec : BddSpec({
 
     "constructor with modifiers" {
         Given
-        val constructor = Constructor()
-        constructor.modifiers.add(Modifier.Private)
-        constructor.parameters.add(Parameter("id", IntType))
+        val constructor = Constructor {
+            +Modifier.Private
+            +Parameter("id", IntType)
+        }
 
         When
         val output = constructor.render()
@@ -72,7 +75,7 @@ class ConstructorSpec : BddSpec({
         Given
         val block = Block("this.name = name")
         val constructor = Constructor(body = block).apply {
-            parameters.add(Parameter("name", StringType))
+            +Parameter("name", StringType)
         }
 
         When

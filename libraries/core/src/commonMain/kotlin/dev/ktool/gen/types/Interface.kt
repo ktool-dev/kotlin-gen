@@ -8,16 +8,23 @@ class Interface(
     modifiers: List<Modifier> = listOf(),
     typeParameters: List<TypeParameter> = listOf(),
     superTypes: List<Type> = listOf(),
-    members: List<ClassMember> = listOf()
-) : TopLevelDeclaration, ClassMember, Modifiers, TypeParameters, SuperTypes, TypeMembers {
-    constructor(name: String, block: Interface.() -> Unit) : this(name) {
+    members: List<ClassMember> = listOf(),
+    block: Interface.() -> Unit = {}
+) : TopLevelDeclaration, ClassMember {
+    val modifiers: MutableList<Modifier> = modifiers.toMutableList()
+    val typeParameters: MutableList<TypeParameter> = typeParameters.toMutableList()
+    val superTypes: MutableList<Type> = superTypes.toMutableList()
+    val members: MutableList<ClassMember> = members.toMutableList()
+
+    init {
         block()
     }
 
-    override val modifiers: MutableList<Modifier> = modifiers.toMutableList()
-    override val typeParameters: MutableList<TypeParameter> = typeParameters.toMutableList()
-    override val superTypes: MutableList<Type> = superTypes.toMutableList()
-    override val members: MutableList<ClassMember> = members.toMutableList()
+    operator fun Modifier.unaryPlus() = apply { modifiers += this }
+    operator fun List<Modifier>.unaryPlus() = apply { modifiers += this }
+    operator fun TypeParameter.unaryPlus() = apply { typeParameters += this }
+    operator fun SuperType.unaryPlus() = apply { superTypes += this }
+    operator fun ClassMember.unaryPlus() = apply { members += this }
 
     fun literal(code: String) {
         members += Literal(code)
@@ -31,13 +38,3 @@ class Interface(
         members.write(writer, nothingIfEmpty = true)
     }
 }
-
-interface Interfaces {
-    val members: MutableList<ClassMember>
-
-    fun addInterface(name: String, block: Interface.() -> Unit = {}) {
-        members += Interface(name, block)
-    }
-}
-
-interface TypeMembers : Properties, Objects, Classes, Interfaces, Functions

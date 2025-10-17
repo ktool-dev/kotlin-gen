@@ -8,32 +8,19 @@ class PrimaryConstructor(
     parameters: List<Parameter> = listOf(),
     properties: List<Property> = listOf(),
     block: PrimaryConstructor.() -> Unit = {}
-) : Writable, Parameters, Modifiers, SpecificProperties {
-    override val modifiers: MutableList<Modifier> = modifiers.toMutableList()
-    override val parameters: MutableList<Parameter> = parameters.toMutableList()
+) : Writable {
+    val modifiers: MutableList<Modifier> = modifiers.toMutableList()
+    val parameters: MutableList<Parameter> = parameters.toMutableList()
     val properties: MutableList<Property> = properties.toMutableList()
 
     init {
         block()
     }
 
-    override fun addValProperty(
-        name: String,
-        type: Type?,
-        initializer: ExpressionBody?,
-        block: Property.() -> Unit
-    ) {
-        properties += Property(name, Mutability.Val, type, initializer, block)
-    }
-
-    override fun addVarProperty(
-        name: String,
-        type: Type?,
-        initializer: ExpressionBody?,
-        block: Property.() -> Unit
-    ) {
-        properties += Property(name, Mutability.Var, type, initializer, block)
-    }
+    operator fun Modifier.unaryPlus() = apply { modifiers += this }
+    operator fun List<Modifier>.unaryPlus() = apply { modifiers += this }
+    operator fun Parameter.unaryPlus() = apply { parameters += this }
+    operator fun Property.unaryPlus() = apply { properties += this }
 
     override fun write(writer: CodeWriter) {
         if (modifiers.isEmpty() && parameters.isEmpty() && properties.isEmpty()) return

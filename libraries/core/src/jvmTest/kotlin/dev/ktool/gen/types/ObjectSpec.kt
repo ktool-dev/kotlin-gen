@@ -17,8 +17,7 @@ class ObjectSpec : BddSpec({
 
     "object with modifier" {
         Given
-        val obj = Object("Config")
-        obj.modifiers.add(Modifier.Internal)
+        val obj = Object("Config", listOf(Modifier.Internal))
 
         When
         val output = obj.render()
@@ -29,8 +28,9 @@ class ObjectSpec : BddSpec({
 
     "object with single supertype" {
         Given
-        val obj = Object("Counter")
-        obj.superTypes.add(Type("Countable"))
+        val obj = Object("Counter") {
+            +SuperType("Countable")
+        }
 
         When
         val output = obj.render()
@@ -41,9 +41,10 @@ class ObjectSpec : BddSpec({
 
     "object with multiple supertypes" {
         Given
-        val obj = Object("Logger")
-        obj.superTypes.add(Type("Loggable"))
-        obj.superTypes.add(Type("AutoCloseable"))
+        val obj = Object("Logger") {
+            +SuperType("Loggable")
+            +SuperType("AutoCloseable")
+        }
 
         When
         val output = obj.render()
@@ -54,8 +55,9 @@ class ObjectSpec : BddSpec({
 
     "object with property member" {
         Given
-        val obj = Object("Constants")
-        obj.members.add(Property("PI", type = Type("Double")))
+        val obj = Object("Constants") {
+            +Property("PI", type = Type("Double"))
+        }
 
         When
         val output = obj.render()
@@ -70,8 +72,9 @@ class ObjectSpec : BddSpec({
 
     "object with function member" {
         Given
-        val obj = Object("Utils")
-        obj.members.add(Function("log"))
+        val obj = Object("Utils") {
+            +Function("log")
+        }
 
         When
         val output = obj.render()
@@ -86,9 +89,10 @@ class ObjectSpec : BddSpec({
 
     "object with multiple members" {
         Given
-        val obj = Object("AppConfig")
-        obj.members.add(Property("version", type = StringType))
-        obj.members.add(Function("initialize"))
+        val obj = Object("AppConfig") {
+            +Property("version", type = StringType)
+            +Function("initialize")
+        }
 
         When
         val output = obj.render()
@@ -105,8 +109,9 @@ class ObjectSpec : BddSpec({
 
     "companion object" {
         Given
-        val obj = Object("Companion")
-        obj.members.add(Function("create"))
+        val obj = Object("Companion") {
+            +Function("create")
+        }
 
         When
         val output = obj.render()

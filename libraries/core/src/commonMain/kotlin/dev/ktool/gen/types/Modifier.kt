@@ -20,11 +20,3 @@ fun Collection<Modifier>.write(writer: CodeWriter) {
         writer.write(distinct().sorted().joinToString(" ", postfix = " ") { it.toString() })
     }
 }
-
-interface Modifiers {
-    val modifiers: MutableList<Modifier>
-
-    fun addModifiers(vararg m: Modifier) {
-        modifiers.addAll(m.toList())
-    }
-}

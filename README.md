@@ -1,11 +1,14 @@
-# Kotlin Gen
+# KotlinGen
 
 A Kotlin Multiplatform code generation library for programmatically creating Kotlin source files.
 
 ## Overview
 
-Kotlin Gen provides a type-safe API for generating Kotlin code. Instead of string concatenation or templates, you can
-build Kotlin declarations using a fluent API that ensures proper formatting, indentation, and syntax.
+For simple code generation cases, multi-line strings work really well. However, if you want to build more complex
+code, or have the ability to progressively and conditionally build the code, or make testing the code output easier,
+then KotlinGen can help. Kotlin Gen provides a type-safe API for generating Kotlin code. Instead of string
+concatenation or templates, you can build Kotlin declarations using a fluent API that ensures proper formatting,
+indentation, and syntax.
 
 ## Features
 
@@ -19,7 +22,7 @@ build Kotlin declarations using a fluent API that ensures proper formatting, ind
 
 ```kotlin
 dependencies {
-    implementation("dev.ktool:kotlin-gen:0.2.1")
+    implementation("dev.ktool:kotlin-gen:1.0.0")
 }
 ```
 
@@ -29,9 +32,9 @@ dependencies {
 
 ```kotlin
 val file = KotlinFile("com.example") {
-    clas("User") {
-        property("id", type = LongType)
-        property("name", type = StringType)
+    +Class("User") {
+        +Property("id", type = LongType)
+        +Property("name", type = StringType)
     }
 }
 
@@ -53,9 +56,9 @@ class User {
 
 ```kotlin
 val file = KotlinFile("com.example") {
-    function("add", returnType = IntType) {
-        param("a", IntType)
-        param("b", IntType)
+    +Function("add", returnType = IntType) {
+        +Parameter("a", IntType)
+        +Parameter("b", IntType)
         body = ExpressionBody("a + b")
     }
 }
@@ -68,8 +71,8 @@ println(file.render())
 
 ```kotlin
 val file = KotlinFile("com.example") {
-    function("isEven", returnType = BooleanType) {
-        receiver(IntType)
+    +Function("isEven", returnType = BooleanType) {
+        receiver = IntType
         body = ExpressionBody("this % 2 == 0")
     }
 }
@@ -82,11 +85,11 @@ println(file.render())
 
 ```kotlin
 val file = KotlinFile("com.example") {
-    interfac("Repository") {
-        typeParam("T")
+    +Interface("Repository") {
+        +TypeParameter("T")
 
-        function("save") {
-            param("entity", Type("T"))
+        +Function("save") {
+            +Parameter("entity", Type("T"))
         }
     }
 }
@@ -106,15 +109,14 @@ interface Repository<T> {
 
 ```kotlin
 val file = KotlinFile("com.example.domain") {
-    import("kotlin.collections.List")
-    import("kotlin.collections.Map")
+    +Import("kotlin.collections.List")
+    +Import("kotlin.collections.Map")
 
-    clas("Product") {
-        modifier(Modifier.Data)
-        primaryConstructor {
-            property("id", type = StringType)
-            property("name", type = StringType)
-            property("price", type = DoubleType)
+    +Class("Product", modifiers = listOf(Modifer.Data)) {
+        primaryConstructor = PrimaryConstructor {
+            +Property("id", type = StringType)
+            +Property("name", type = StringType)
+            +Property("price", type = DoubleType)
         }
     }
 }

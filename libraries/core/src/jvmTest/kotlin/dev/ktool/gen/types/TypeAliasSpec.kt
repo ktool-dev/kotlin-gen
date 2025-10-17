@@ -6,8 +6,8 @@ import io.kotest.matchers.shouldBe
 class TypeAliasSpec : BddSpec({
     "simple typealias" {
         Given
-        val typeAlias = TypeAlias("StringList", Type("List").apply {
-            typeArguments.add(StringType)
+        val typeAlias = TypeAlias("StringList", Type("List") {
+            +TypeArgument("String")
         })
 
         When
@@ -30,11 +30,11 @@ class TypeAliasSpec : BddSpec({
 
     "typealias to complex type" {
         Given
-        val mapType = Type("Map").apply {
-            typeArguments.add(StringType)
-            typeArguments.add(Type("List").apply {
-                typeArguments.add(IntType)
-            })
+        val mapType = Type("Map") {
+            +TypeArgument("String")
+            +TypeArgument("List") {
+                +TypeArgument("Int")
+            }
         }
         val typeAlias = TypeAlias("StringToIntList", mapType)
 
@@ -47,8 +47,9 @@ class TypeAliasSpec : BddSpec({
 
     "typealias with modifiers" {
         Given
-        val typeAlias = TypeAlias("Internal", StringType)
-        typeAlias.modifiers.add(Modifier.Internal)
+        val typeAlias = TypeAlias("Internal", StringType) {
+            +Modifier.Internal
+        }
 
         When
         val output = typeAlias.render()
@@ -61,12 +62,13 @@ class TypeAliasSpec : BddSpec({
         Given
         val typeAlias = TypeAlias(
             "Predicate",
-            Type("Function1").apply {
-                typeArguments.add(Type("T"))
-                typeArguments.add(Type("Boolean"))
+            Type("Function1") {
+                +TypeArgument("T")
+                +TypeArgument("Boolean")
             }
-        )
-        typeAlias.typeParameters.add(TypeParameter("T"))
+        ) {
+            +TypeParameter("T")
+        }
 
         When
         val output = typeAlias.render()
@@ -79,15 +81,16 @@ class TypeAliasSpec : BddSpec({
         Given
         val typeAlias = TypeAlias(
             "BiFunction",
-            Type("Function2").apply {
-                typeArguments.add(Type("A"))
-                typeArguments.add(Type("B"))
-                typeArguments.add(Type("R"))
+            Type("Function2") {
+                +TypeArgument("A")
+                +TypeArgument("B")
+                +TypeArgument("R")
             }
-        )
-        typeAlias.typeParameters.add(TypeParameter("A"))
-        typeAlias.typeParameters.add(TypeParameter("B"))
-        typeAlias.typeParameters.add(TypeParameter("R"))
+        ) {
+            +TypeParameter("A")
+            +TypeParameter("B")
+            +TypeParameter("R")
+        }
 
         When
         val output = typeAlias.render()
@@ -100,15 +103,16 @@ class TypeAliasSpec : BddSpec({
         Given
         val typeAlias = TypeAlias(
             "ComparableList",
-            Type("List").apply {
-                typeArguments.add(Type("T"))
+            Type("List") {
+                +TypeArgument("T")
             }
-        )
-        typeAlias.typeParameters.add(TypeParameter("T").apply {
-            typeArguments.add(Type("Comparable").apply {
-                typeArguments.add(Type("T"))
-            })
-        })
+        ) {
+            +TypeParameter("T") {
+                +TypeArgument("Comparable") {
+                    +TypeArgument("T")
+                }
+            }
+        }
 
         When
         val output = typeAlias.render()
@@ -121,13 +125,12 @@ class TypeAliasSpec : BddSpec({
         Given
         val typeAlias = TypeAlias(
             "Producer",
-            Type("Function0").apply {
-                typeArguments.add(Type("T"))
+            Type("Function0") {
+                +TypeArgument("T")
             }
-        )
-        typeAlias.typeParameters.add(TypeParameter("T").apply {
-            variance = Variance.Out
-        })
+        ) {
+            +TypeParameter("T", variance = Variance.Out)
+        }
 
         When
         val output = typeAlias.render()

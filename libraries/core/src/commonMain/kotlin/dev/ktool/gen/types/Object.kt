@@ -7,28 +7,26 @@ class Object(
     var name: String,
     modifiers: List<Modifier> = listOf(),
     superTypes: List<Type> = listOf(),
-    members: List<ClassMember> = listOf()
-) : TopLevelDeclaration, ClassMember, Modifiers, SuperTypes, TypeMembers, InitBlocks {
-    constructor(name: String, block: Object.() -> Unit) : this(name) {
+    members: List<ClassMember> = listOf(),
+    block: Object.() -> Unit = {},
+) : TopLevelDeclaration, ClassMember {
+    val modifiers: MutableList<Modifier> = modifiers.toMutableList()
+    val superTypes: MutableList<Type> = superTypes.toMutableList()
+    val members: MutableList<ClassMember> = members.toMutableList()
+
+    init {
         block()
     }
 
-    override val modifiers: MutableList<Modifier> = modifiers.toMutableList()
-    override val superTypes: MutableList<Type> = superTypes.toMutableList()
-    override val members: MutableList<ClassMember> = members.toMutableList()
+    operator fun Modifier.unaryPlus() = apply { modifiers += this }
+    operator fun List<Modifier>.unaryPlus() = apply { modifiers += this }
+    operator fun SuperType.unaryPlus() = apply { superTypes += this }
+    operator fun ClassMember.unaryPlus() = apply { members += this }
 
     override fun write(writer: CodeWriter) {
         modifiers.write(writer)
         writer.write("object ${name.safe}")
         superTypes.writeSuperTypes(writer)
         members.write(writer, nothingIfEmpty = true)
-    }
-}
-
-interface Objects {
-    val members: MutableList<ClassMember>
-
-    fun addObject(name: String, block: Object.() -> Unit = {}) {
-        members += Object(name, block)
     }
 }
