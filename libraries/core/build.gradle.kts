@@ -35,6 +35,11 @@ kotlin {
 
     applyDefaultHierarchyTemplate()
 
+    @OptIn(ExperimentalKotlinGradlePluginApi::class)
+    compilerOptions {
+        freeCompilerArgs.add("-module-name=kotlin-gen")
+    }
+
     sourceSets {
         commonMain.dependencies {
             implementation(libs.kotlin.logging)
